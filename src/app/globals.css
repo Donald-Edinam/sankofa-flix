@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Afro-Cinema Palette (Primary Dark Mode) */
+  --ghana-green: #006B3F;    /* Primary actions, buttons, key highlights */
+  --ghana-gold:  #FCD116;    /* Accents, ratings, and highlights */
+  --off-black:   #101010;    /* Main app background */
+  --carbon-gray: #1A1A1A;    /* Cards, containers, modals */
+  --charcoal:    #242424;    /* Secondary surfaces, hover states */
+  --ghana-red:   #CE1126;    /* Attention elements, favorites */
+  --white:       #FFFFFF;    /* Primary text */
+  --light-gray:  #E0E0E0;    /* Secondary text */
+  --medium-gray: #A0A0A0;    /* Hints, less important text */
+  --dark-border: #333333;    /* Subtle separators */
+  --success-green: #2E7D32;  /* Success messages, confirmations */
+  --error-red:   #D32F2F;    /* Error messages, warnings */
+
+  /* Main background and foreground for the default (dark) mode */
+  --background: var(--off-black);
+  --foreground: var(--white);
+}
+
+/* Optional: Light Mode Overrides */
+@media (prefers-color-scheme: light) {
+  :root {
+    /* For light mode, you might switch to a lighter background and darker text */
+    --background: #ffffff;
+    --foreground: #171717;
+    /* You can also adjust or leave the Afro-Cinema variables as is,
+       depending on your design intent */
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+}
