@@ -1,3 +1,4 @@
+import { ThemeProvider } from "@/context/ThemeProvider";
 import "./globals.css";
 import { Metadata } from 'next';
 import { Poppins } from 'next/font/google';
@@ -20,7 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${poppins.className} font-sans antialiased`}>
-        {children}
+        <ThemeProvider defaultTheme="system" storageKey="sankofa-theme">{children}</ThemeProvider>
       </body>
     </html>
   );

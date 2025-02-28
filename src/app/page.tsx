@@ -1,11 +1,13 @@
+import Navbar05Page from '@/components/navbar-05/navbar-05'
 import { Button } from '@/components/ui/button'
 import React from 'react'
 
 const Home = () => {
   return (
     <>
-      <div>Home</div>
-      <Button>Hello</Button>
+      <div className="container-lg">
+        <Navbar05Page />
+      </div>
     </>
   )
 }
