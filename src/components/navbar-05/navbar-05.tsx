@@ -1,13 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Logo } from "./logo";
 import { Search } from "lucide-react";
 import { ThemeToggle } from "../theme";
+import HeroBanner from "../home";
 
 const Navbar05Page = () => {
   return (
     <div className="min-h-screen bg-muted">
-      <nav className="fixed top-6 inset-x-4 h-16 bg-background border dark:border-slate-700/70 max-w-screen-xl mx-auto rounded-full">
+      <nav className="fixed top-6 inset-x-4 h-16 bg-background border dark:border-slate-700/70 max-w-screen-xl mx-auto rounded-full z-50">
         <div className="h-full flex items-center justify-between mx-auto px-4">
           <div className="flex items-center gap-2 md:gap-6">
             {/* <Logo className="shrink-0" /> */}
@@ -15,7 +15,7 @@ const Navbar05Page = () => {
             <div className="relative hidden md:block">
               <Search className="h-5 w-5 absolute inset-y-0 my-auto left-2.5" />
               <Input
-                className="pl-10 flex-1 bg-slate-100/70 dark:bg-slate-800 border-none shadow-none w-[280px] rounded-full"
+                className="pl-10 flex-1 bg-slate-200/50 shadow-sm dark:bg-slate-800 border-none w-[280px] rounded-full"
                 placeholder="Search"
               />
             </div>
@@ -39,6 +39,7 @@ const Navbar05Page = () => {
           </div>
         </div>
       </nav>
+      <HeroBanner />
     </div>
   );
 };

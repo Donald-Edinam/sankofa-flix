@@ -1,0 +1,29 @@
+{
+    "movies": [
+      {
+        "id": 1,
+        "title": "The Dark Knight",
+        "backdropUrl": "https://i.pinimg.com/736x/f9/cd/19/f9cd19cc019bb473fd903f3d1f7c310d.jpg",
+        "releaseDate": "2008",
+        "rating": 4.8,
+        "description": "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice."
+      },
+      {
+        "id": 2,
+        "title": "Inception",
+        "backdropUrl": "https://i.pinimg.com/1200x/95/e1/49/95e1494bd43d9e7d2cabd239eee5a8e5.jpg",
+        "releaseDate": "2010",
+        "rating": 4.7,
+        "description": "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O."
+      },
+      {
+        "id": 3,
+        "title": "Interstellar",
+        "backdropUrl": "https://i.pinimg.com/736x/45/2e/ea/452eead1c152ed35217b6e8d6e2556f3.jpg",
+        "releaseDate": "2014",
+        "rating": 4.6,
+        "description": "A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival."
+      }
+    ]
+  }
+  
