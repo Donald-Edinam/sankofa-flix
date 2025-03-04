@@ -15,35 +15,31 @@ import { Movie } from '@/interfaces';
 import ErrorDisplay from '../common/ErrorDisplay';
 
 const HeroBanner = () => {
-
     const { fetchTrendingMovies } = movieApi;
 
-    const {data: featuredMovies, isLoading, error, isError} = useQuery({
+    const { data: featuredMovies, isLoading, error, isError } = useQuery({
         queryKey: ['trending-movies'],
-        queryFn: fetchTrendingMovies
+        queryFn: fetchTrendingMovies,
     });
 
-    if (isLoading){
-        return (
-            <h1>Loading...</h1>
-        )
+    if (isLoading) {
+        return <h1>Loading...</h1>;
     }
 
     if (isError) {
         return <ErrorDisplay message={error instanceof Error ? error.message : 'An unknown error occurred'} />;
-      }
-    
+    }
 
     return (
         <div className="relative w-full h-screen">
             <Carousel className="w-full h-screen">
                 <CarouselContent className="h-full">
-                    {featuredMovies.map((movie: Movie) => (
+                    {featuredMovies?.map((movie: Movie) => (
                         <CarouselItem key={movie.id} className="h-screen">
                             <div className="relative h-full w-full overflow-hidden rounded-lg">
                                 <div
                                     className="absolute inset-0 bg-cover bg-center"
-                                    style={{ backgroundImage: `url(${movie.backdropUrl})` }}
+                                    style={{ backgroundImage: `url(https://image.tmdb.org/t/p/w1280${movie.backdrop_path})` }} // Updated to use backdrop_path
                                 >
                                     <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/70 to-black"></div>
                                 </div>
@@ -51,20 +47,20 @@ const HeroBanner = () => {
                                 <div className="absolute bottom-0 left-0 w-full p-8">
                                     <h2 className="text-4xl font-bold text-white mb-2">{movie.title}</h2>
                                     <div className="flex items-center mb-4">
-                                        <span className="text-gray-300 mr-4">{movie.releaseDate}</span>
+                                        <span className="text-gray-300 mr-4">{movie.release_date}</span> {/* Updated to use release_date */}
                                         <div className="flex items-center">
                                             {[...Array(5)].map((_, i) => (
                                                 <Star
                                                     key={i}
                                                     size={16}
-                                                    className={`${i < Math.floor(movie.rating) ? 'text-yellow-600' : 'text-gray-500'} ${i === Math.floor(movie.rating) && movie.rating % 1 > 0 ? 'fill-yellow-600' : ''}`}
-                                                    fill={i < Math.floor(movie.rating) ? "currentColor" : "none"}
+                                                    className={`${i < Math.floor(movie.vote_average / 2) ? 'text-yellow-600' : 'text-gray-500'} ${i === Math.floor(movie.vote_average / 2) && movie.vote_average % 2 > 0 ? 'fill-yellow-600' : ''}`} // Updated to use vote_average
+                                                    fill={i < Math.floor(movie.vote_average / 2) ? "currentColor" : "none"} // Updated to use vote_average
                                                 />
                                             ))}
-                                            <span className="ml-2 text-gray-300">{movie.rating.toFixed(1)}</span>
+                                            <span className="ml-2 text-gray-300">{(movie.vote_average / 2).toFixed(1)}</span> {/* Updated to use vote_average */}
                                         </div>
                                     </div>
-                                    <p className="text-gray-300 mb-6 max-w-lg">{movie.description}</p>
+                                    <p className="text-gray-300 mb-6 max-w-lg">{movie.overview}</p> {/* Updated to use overview */}
                                     <div className="flex space-x-4">
                                         <button className="px-6 py-2 bg-red-700 text-white font-medium rounded-md hover:bg-red-800 transition-colors">
                                             Watch Trailer

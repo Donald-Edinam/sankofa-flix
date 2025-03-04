@@ -1,12 +1,24 @@
 import { ThemeProvider } from "@/context/ThemeProvider";
 import "./globals.css";
 import { Metadata } from 'next';
-import { Poppins } from 'next/font/google';
+import localFont from 'next/font/local'; // Use localFont for custom fonts
 import { QueryProvider } from "@/context/QueryProvider";
 
-const poppins = Poppins({
-  weight: ['400', '700'],
-  subsets: ['latin'],
+// Define the local Poppins font
+const poppins = localFont({
+  src: [
+    {
+      path: '../../public/fonts/Poppins-Regular.ttf', // Path to .ttf file
+      weight: '400',
+      style: 'normal',
+    },
+    {
+      path: '../../public/fonts/Poppins-Bold.ttf', // Path to .ttf file
+      weight: '700',
+      style: 'normal',
+    },
+  ],
+  display: 'swap',
 });
 
 export const metadata: Metadata = {

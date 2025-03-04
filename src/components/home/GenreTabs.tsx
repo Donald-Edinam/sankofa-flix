@@ -1,15 +1,22 @@
-"use client"
+"use client";
 
-import React, { useState } from 'react';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { Genre } from '@/interfaces';
-import { useQuery } from '@tanstack/react-query';
-import { genreMovies } from '@/services/movieService';
-import MovieCard from '@/components/common/MovieCard';
-import Loader from '@/components/common/Loader';
-import ErrorDisplay from '@/components/common/ErrorDisplay';
+import React, { useState } from "react";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Genre } from "@/interfaces";
+import { useQuery } from "@tanstack/react-query";
+import { genreMovies } from "@/services/movieService";
+import MovieCard from "@/components/common/MovieCard";
+import Loader from "@/components/common/Loader";
+import ErrorDisplay from "@/components/common/ErrorDisplay";
 
+// Define genres and their corresponding IDs
 const genres: Genre[] = ["All Genres", "Drama", "Action", "Comedy", "Documentary"];
+const genreIdMap: Record<string, number> = {
+  Drama: 18,
+  Action: 28,
+  Comedy: 35,
+  Documentary: 99,
+};
 
 const GenreTabs: React.FC = () => {
   const [activeGenre, setActiveGenre] = useState<Genre>("All Genres");
@@ -22,6 +29,13 @@ const GenreTabs: React.FC = () => {
   const handleGenreChange = (genre: Genre) => {
     setActiveGenre(genre);
   };
+
+  // Filter movies based on the active genre
+  const filteredMovies = movies?.filter((movie) => {
+    if (activeGenre === "All Genres") return true;
+    const genreId = genreIdMap[activeGenre];
+    return movie.genre_ids.includes(genreId);
+  });
 
   return (
     <div className="mt-12">
@@ -52,9 +66,9 @@ const GenreTabs: React.FC = () => {
               </div>
             ) : isError ? (
               <ErrorDisplay message={error instanceof Error ? error.message : 'An unknown error occurred'} />
-            ) : movies && movies.length > 0 ? (
+            ) : filteredMovies && filteredMovies.length > 0 ? (
               <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 place-items-center">
-                {movies.map((movie) => (
+                {filteredMovies.map((movie) => (
                   <MovieCard key={movie.id} movie={movie} />
                 ))}
               </div>
@@ -63,14 +77,6 @@ const GenreTabs: React.FC = () => {
                 <p className="text-gray-500 dark:text-gray-400">No movies found in this genre.</p>
               </div>
             )}
-            
-            {/* {!isLoading && !isError && movies && movies.length > 0 && (
-              <div className="mt-8 flex justify-center">
-                <button className="rounded-lg bg-green-600 px-6 py-2 text-sm font-medium text-white transition-colors hover:bg-green-700">
-                  Load More
-                </button>
-              </div>
-            )} */}
           </TabsContent>
         ))}
       </Tabs>
