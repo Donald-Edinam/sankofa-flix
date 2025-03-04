@@ -55,7 +55,7 @@ The **Movie Recommendation App** is a web application built with Next.js that al
 
 3. **Set up the environment variables:**
 
-   - Create a `.env.local` file in the root directory of the project.
+   - Create a `.env` file in the root directory of the project.
    - Add the following environment variable:
 
      ```env
