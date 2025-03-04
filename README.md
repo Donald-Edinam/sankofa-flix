@@ -31,53 +31,53 @@ The **Movie Recommendation App** is a web application built with Next.js that al
 - **ESLint & Prettier**: Code quality and formatting
 
 ---
-
 ## Running the App Locally
 
 ### Prerequisites
+
 - Node.js (v18 or higher)
 - npm or yarn
 
 ### Steps
+
 1. **Clone the repository:**
-  ```bash
-  git clone https://github.com/Donald-Edinam/sankofa-flix.git
-  cd sankofa-flix
-  ```
+
+   ```bash
+   git clone [https://github.com/Donald-Edinam/sankofa-flix.git](https://github.com/Donald-Edinam/sankofa-flix.git)
+   cd sankofa-flix
+   ```
 
 2. **Install dependencies:**
-  ```bash
-  npm install
+
+   ```bash
+   npm install
+   ```
 
 3. **Set up the environment variables:**
-  - Create a `.env.local` file in the root directory of the project.
-  - Add the following environment variables:
-    ```env
-    NEXT_PUBLIC_API_BASE_URL=http://localhost:8000/api
-    ```
+
+   - Create a `.env.local` file in the root directory of the project.
+   - Add the following environment variable:
+
+     ```env
+     NEXT_PUBLIC_API_BASE_URL=http://localhost:8000/api
+     ```
 
 4. **Run the development server:**
-  ```bash
-  npm run dev
 
-  ```
+   ```bash
+   npm run dev
+   ```
 
 5. **Open the app in your browser:**
-  - Navigate to `http://localhost:3000`
+
+   - Navigate to `http://localhost:3000`
 
 6. **Build for production (optional):**
-  ```bash
-  npm run build
-  npm start
-  ```
 
-### Notes
-- Ensure you have a valid TMDB API key. You can obtain one by creating an account on [The Movie Database (TMDB) website](https://www.themoviedb.org/).
-- The `NEXT_PUBLIC_API_BASE_URL` should point to your local API endpoint during development.
-
----
-
-
+   ```bash
+   npm run build
+   npm start
+   ```
 
 ## Architecture Overview
 The application follows a modular architecture with clear separation of concerns:
