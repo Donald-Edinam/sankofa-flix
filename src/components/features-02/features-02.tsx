@@ -10,10 +10,12 @@ import Loader from '@/components/common/Loader';
 import ErrorDisplay from '@/components/common/ErrorDisplay';
 
 function MovieShowcase() {
-  const { data: featuredMovies, isLoading, isError, error } = useQuery({
+  const { data, isLoading, isError, error } = useQuery({
     queryKey: ["trending-movies"],
     queryFn: movieApi.fetchTrendingMovies
   });
+
+  const featuredMovies = data?.slice(4, 10) || [];
 
   if (isLoading) {
     return <Loader />;
@@ -21,6 +23,10 @@ function MovieShowcase() {
 
   if (isError) {
     return <ErrorDisplay message={error instanceof Error ? error.message : 'An unknown error occurred'} />;
+  }
+
+  if (!featuredMovies.length) {
+    return
   }
 
   return (

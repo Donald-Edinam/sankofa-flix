@@ -1,17 +1,17 @@
+// components/Navbar.jsx
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { ThemeToggle } from "../theme";
-import HeroBanner from "../home";
 
-const Navbar05Page = () => {
+const Navbar = () => {
   return (
-    <div className="min-h-screen bg-muted">
+    <header className="w-full">
       <nav className="fixed top-6 inset-x-4 h-16 bg-background border dark:border-slate-700/70 max-w-screen-xl mx-auto rounded-full z-50">
         <div className="h-full flex items-center justify-between mx-auto px-4">
           <div className="flex items-center gap-2 md:gap-6">
             {/* <Logo className="shrink-0" /> */}
-              <h1 className="shrink-0 font-bold ml-3">SankofaFlix</h1>
+            <h1 className="shrink-0 font-bold ml-3">SankofaFlix</h1>
             <div className="relative hidden md:block">
               <Search className="h-5 w-5 absolute inset-y-0 my-auto left-2.5" />
               <Input
@@ -39,9 +39,8 @@ const Navbar05Page = () => {
           </div>
         </div>
       </nav>
-      <HeroBanner />
-    </div>
+    </header>
   );
 };
 
-export default Navbar05Page;
+export default Navbar;

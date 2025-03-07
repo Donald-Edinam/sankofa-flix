@@ -3,6 +3,8 @@ import "./globals.css";
 import { Metadata } from 'next';
 import localFont from 'next/font/local'; // Use localFont for custom fonts
 import { QueryProvider } from "@/context/QueryProvider";
+import Footer from "@/components/footer-05/footer-05";
+import Navbar05Page from "@/components/navbar-05/navbar-05";
 
 // Define the local Poppins font
 const poppins = localFont({
@@ -36,7 +38,9 @@ export default function RootLayout({
       <body className={`${poppins.className} font-sans antialiased`}>
         <ThemeProvider defaultTheme="system" storageKey="sankofa-theme">
           <QueryProvider>
+            <Navbar05Page />
             {children}
+            <Footer />
           </QueryProvider>
         </ThemeProvider>
       </body>

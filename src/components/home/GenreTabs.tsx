@@ -67,7 +67,7 @@ const GenreTabs: React.FC = () => {
             ) : isError ? (
               <ErrorDisplay message={error instanceof Error ? error.message : 'An unknown error occurred'} />
             ) : filteredMovies && filteredMovies.length > 0 ? (
-              <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 place-items-center">
+              <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 place-items-center container mx-auto">
                 {filteredMovies.map((movie) => (
                   <MovieCard key={movie.id} movie={movie} />
                 ))}

@@ -62,12 +62,12 @@ const HeroBanner = () => {
                                     </div>
                                     <p className="text-gray-300 mb-6 max-w-lg">{movie.overview}</p> {/* Updated to use overview */}
                                     <div className="flex space-x-4">
-                                        <button className="px-6 py-2 bg-red-700 text-white font-medium rounded-md hover:bg-red-800 transition-colors">
+                                        <button className="px-10 py-3 bg-primary text-white font-medium rounded-md hover:bg-red-800 transition-colors">
+                                        View Details
+                                        </button>
+                                        {/* <button className="px-6 py-2 bg-gray-800 text-white font-medium rounded-md border border-gray-600 hover:bg-gray-700 transition-colors">
                                             Watch Trailer
-                                        </button>
-                                        <button className="px-6 py-2 bg-gray-800 text-white font-medium rounded-md border border-gray-600 hover:bg-gray-700 transition-colors">
-                                            View Details
-                                        </button>
+                                        </button> */}
                                     </div>
                                 </div>
                             </div>
