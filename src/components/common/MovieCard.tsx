@@ -2,12 +2,16 @@ import React from 'react';
 import { Star } from 'lucide-react';
 import { Movie } from '@/interfaces/index';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 interface MovieCardProps {
   movie: Movie;
 }
 
 const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
+
+  const router = useRouter();
+
   return (
     <div className="group flex w-full sm:w-[360px] flex-col overflow-hidden rounded-lg shadow-md transition-all duration-300 hover:shadow-lg bg-white dark:bg-slate-800">
       <div className="relative h-52 sm:h-56 overflow-hidden">
@@ -15,9 +19,9 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
           src={`https://image.tmdb.org/t/p/w500${movie.backdrop_path}`} 
           alt={movie.title} 
           className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-          width={500} // Set width
-          height={280} // Set height
-          priority // Optional: Use for above-the-fold images
+          width={500}
+          height={280} 
+          priority 
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
         <div className="absolute bottom-3 left-3 flex items-center space-x-1">
@@ -33,7 +37,9 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
         <p className="mb-3 flex-1 text-xs sm:text-sm text-gray-600 dark:text-gray-300 line-clamp-3">
           {movie.overview}
         </p>
-        <button className="mt-auto self-start rounded-md bg-primary px-3 py-2 text-xs sm:text-sm font-medium text-white transition-colors hover:bg-accent-foreground">
+        <button 
+        onClick={() => router.push(`/movies/${movie.id}`)}  
+        className="mt-auto self-start rounded-md bg-primary px-3 py-2 text-xs sm:text-sm font-medium text-white transition-colors hover:bg-accent-foreground">
           View Details
         </button>
       </div>

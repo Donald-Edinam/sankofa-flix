@@ -1,13 +1,28 @@
-// interfaces/index.ts
 export interface Movie {
+  backdrop_path: string;
   id: number;
   title: string;
-  backdrop_path: string; // Updated to match API
-  poster_path: string; // Added to match API
-  overview: string; // Updated to match API
-  release_date: string; // Updated to match API
-  vote_average: number; // Updated to match API
-  genre_ids: number[]; // Updated to match API
+  original_title: string;
+  overview: string;
+  poster_path: string;
+  media_type: string;
+  adult: boolean;
+  original_language: string;
+  genre_ids: number[];
+  popularity: number;
+  release_date: string;
+  video: boolean;
+  vote_average: number;
+  vote_count: number;
+  runtime?: number; // Optional as it might not be in the API response
+  cast?: {
+    name: string;
+    character: string;
+    image: string;
+  }[];
+  director?: string;
+  writers?: string[];
+  production?: string;
 }
 
 export type Genre = "All Genres" | "Drama" | "Action" | "Comedy" | "Documentary";

@@ -13,9 +13,11 @@ import { useQuery } from '@tanstack/react-query';
 import { movieApi } from '@/services/movieService';
 import { Movie } from '@/interfaces';
 import ErrorDisplay from '../common/ErrorDisplay';
+import { useRouter } from 'next/navigation';
 
 const HeroBanner = () => {
     const { fetchTrendingMovies } = movieApi;
+    const router = useRouter();
 
     const { data: featuredMovies, isLoading, error, isError } = useQuery({
         queryKey: ['trending-movies'],
@@ -36,7 +38,7 @@ const HeroBanner = () => {
                 <CarouselContent className="h-full">
                     {featuredMovies?.map((movie: Movie) => (
                         <CarouselItem key={movie.id} className="h-screen">
-                            <div className="relative h-full w-full overflow-hidden rounded-lg">
+                            <div className="relative h-full w-full overflow-hidden rounded-0">
                                 <div
                                     className="absolute inset-0 bg-cover bg-center"
                                     style={{ backgroundImage: `url(https://image.tmdb.org/t/p/w1280${movie.backdrop_path})` }} // Updated to use backdrop_path
@@ -62,7 +64,9 @@ const HeroBanner = () => {
                                     </div>
                                     <p className="text-gray-300 mb-6 max-w-lg">{movie.overview}</p> {/* Updated to use overview */}
                                     <div className="flex space-x-4">
-                                        <button className="px-10 py-3 bg-primary text-white font-medium rounded-md hover:bg-red-800 transition-colors">
+                                        <button 
+                                        onClick={() => router.push(`/movies/${movie.id}`)} 
+                                        className="px-10 py-3 bg-primary text-white font-medium rounded-md hover:bg-red-800 transition-colors">
                                         View Details
                                         </button>
                                         {/* <button className="px-6 py-2 bg-gray-800 text-white font-medium rounded-md border border-gray-600 hover:bg-gray-700 transition-colors">

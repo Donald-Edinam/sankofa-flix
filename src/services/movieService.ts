@@ -35,7 +35,7 @@ export const genreMovies = {
     } else {
       const genreId = genreIdMap[genre]; // Get the genre ID from the map
       return movies.filter((movie: Movie) => 
-        movie.genre_ids.includes(genreId) // Filter movies that include the selected genre ID
+        movie?.genre_ids?.includes(genreId) // Filter movies that include the selected genre ID
       );
     }
   }

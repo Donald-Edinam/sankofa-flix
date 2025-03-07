@@ -1,4 +1,4 @@
-import MovieShowcase from '@/components/features-02/features-02'
+import MovieShowcase from '@/components/features/features'
 import HeroBanner from '@/components/home'
 import GenreTabs from '@/components/home/GenreTabs'
 import React from 'react'
