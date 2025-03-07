@@ -2,6 +2,7 @@ import React from 'react';
 import { Star, Play, Plus, Share } from 'lucide-react';
 import Image from 'next/image';
 import { Movie } from '@/interfaces';
+import MovieCard from './MovieCard';
 
 // Genre mapping for genre_ids
 const genreMap: Record<number, string> = {
@@ -26,7 +27,7 @@ const genreMap: Record<number, string> = {
   37: "Western"
 };
 
-const MovieDetails: React.FC<{ movie: Movie }> = ({ movie }) => {
+const MovieDetails: React.FC<{ movie: Movie, recommendedMovies: Movie[] }> = ({ movie, recommendedMovies }) => {
   // Format release year
   const year = movie.release_date ? new Date(movie.release_date).getFullYear().toString() : "";
   
@@ -161,26 +162,17 @@ const MovieDetails: React.FC<{ movie: Movie }> = ({ movie }) => {
       {/* Cast Section */}
       <section className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-bold">Cast</h2>
-          <a href="#" className="text-green-400 text-sm hover:underline">View All</a>
+        <h1 className='text-secondary-foreground font-bold text-lg'>You might also like this</h1>
+          <a href="#" className="text-primary text-sm hover:underline">View All</a>
         </div>
         
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-          {cast.map((actor, index) => (
-            <div key={index} className="bg-gray-900 rounded-lg overflow-hidden">
-              <Image 
-                src={actor.image} 
-                alt={actor.name} 
-                className="w-full aspect-square object-cover"
-                width={200}
-                height={200}
-              />
-              <div className="p-3">
-                <h3 className="font-medium text-sm">{actor.name}</h3>
-                <p className="text-gray-400 text-xs">{actor.character}</p>
-              </div>
-            </div>
-          ))}
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+          {
+            recommendedMovies ? 
+            recommendedMovies.map((movie, index) => (
+              <MovieCard key={index} movie={movie} />
+            )) : <p className='text-white'>No recommended movies available</p>
+          }
         </div>
       </section>
     </div>
