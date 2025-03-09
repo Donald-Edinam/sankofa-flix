@@ -35,8 +35,8 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
         </div>
       </div>
       <div className="flex flex-1 flex-col p-3 sm:p-4">
-        <h3 className="mb-2 text-lg font-semibold text-gray-900 dark:text-white">{movie.title}</h3>
-        <p className="mb-3 flex-1 text-xs sm:text-sm text-gray-600 dark:text-gray-300 line-clamp-3">
+        <h3 className="mb-2 text-lg font-semibold text-gray-900 truncate dark:text-white">{movie.title}</h3>
+        <p className="mb-3 flex-1 text-xs sm:text-sm text-gray-600 truncate dark:text-gray-300 line-clamp-3">
           {movie.overview}
         </p>
         <button 

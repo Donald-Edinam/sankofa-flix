@@ -1,16 +1,11 @@
-// @ts-nocheck
 import React from 'react';
 import MovieDetails from '@/components/common/MovieDetails';
-import { Movie } from '@/interfaces';
 import Link from 'next/link';
 import { getMovieDetails, fetchRecommendedMovies } from '@/services/services';
 
 export default async function MoviePage({ params }: { params: { id: string } }) {
   const movieData = await getMovieDetails(params.id);
-
-  const recommendedMovies = await fetchRecommendedMovies({ movieId: params.id });
-  console.log("Recommended movies", recommendedMovies)
-
+  
   if (!movieData) {
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center">
@@ -27,6 +22,8 @@ export default async function MoviePage({ params }: { params: { id: string } }) 
       </div>
     );
   }
+
+  const recommendedMovies = await fetchRecommendedMovies({ movieId: params.id });
 
   return <MovieDetails
     movie={movieData}

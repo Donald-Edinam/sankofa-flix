@@ -1,54 +1,33 @@
 import React from 'react';
 import { Star, Play, Plus, Share } from 'lucide-react';
 import Image from 'next/image';
-import { Movie } from '@/interfaces';
+import { Movie, MovieResponse } from '@/interfaces';
 import MovieCard from './MovieCard';
 
-// Genre mapping for genre_ids
-const genreMap: Record<number, string> = {
-  28: "Action",
-  12: "Adventure",
-  16: "Animation",
-  35: "Comedy",
-  80: "Crime",
-  99: "Documentary",
-  18: "Drama",
-  10751: "Family",
-  14: "Fantasy",
-  36: "Historical",
-  27: "Horror",
-  10402: "Music",
-  9648: "Mystery",
-  10749: "Romance",
-  878: "Science Fiction",
-  10770: "TV Movie",
-  53: "Thriller",
-  10752: "War",
-  37: "Western"
-};
+// Genre mapping is not needed since we have the full genre objects in the new data
 
-const MovieDetails: React.FC<{ movie: Movie, recommendedMovies: Movie[] }> = ({ movie, recommendedMovies }) => {
+const MovieDetails: React.FC<{ movie: Movie, recommendedMovies: MovieResponse }> = ({ movie, recommendedMovies }) => {
   // Format release year
   const year = movie.release_date ? new Date(movie.release_date).getFullYear().toString() : "";
   
-  // Format runtime (if available)
+  // Format runtime using the actual runtime from the data
   const runtime = movie.runtime 
     ? `${Math.floor(movie.runtime / 60)}h ${movie.runtime % 60}m` 
-    : "2h 15m"; // Default fallback
+    : "";
   
-  // Convert genre_ids to genre names
-  const genres = movie.genre_ids?.map(id => genreMap[id] || "Unknown") || [];
+  // Use actual genres from the data instead of mapping from IDs
+  const genres = movie.genres || [];
   
   // Default cast if not provided
   const cast = movie.cast || [
     { name: "Cast information unavailable", character: "", image: "https://picsum.photos/seed/picsum/200/300" }
   ];
   
-  // Default director and writers if not provided
-  const director = movie.director || "Information unavailable";
-  const writers = movie.writers || ["Information unavailable"];
-  const production = movie.production || "Information unavailable";
-  
+  // Production companies
+  const production = movie.production_companies 
+    ? movie.production_companies.map(company => company.name).join(', ')
+    : "Information unavailable";
+    
   // Format image paths
   const posterPath = movie.poster_path 
     ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` 
@@ -58,12 +37,20 @@ const MovieDetails: React.FC<{ movie: Movie, recommendedMovies: Movie[] }> = ({ 
     ? `https://image.tmdb.org/t/p/original${movie.backdrop_path}` 
     : "/api/placeholder/1920/1080";
 
+  // Format tagline
+  const tagline = movie.tagline || "";
+
+  // Get production countries
+  const countries = movie.production_countries 
+    ? movie.production_countries.map(country => country.name).join(', ')
+    : "";
+
   return (
     <div className="bg-background text-white min-h-screen dark:bg-black dark:text-gray-300">
       {/* Hero Section */}
       <section className="relative pt-8 md:pt-16">
         {/* Backdrop with overlay */}
-        <div className="absolute inset-0 z-0 bg-gradient-to-r from-black to-gray-500 dark:from-cyan-950 dark:to-transparent ">
+        <div className="absolute inset-0 z-0 bg-gradient-to-r from-black to-gray-500 dark:from-cyan-950 dark:to-transparent">
           <Image 
             src={backdropPath} 
             alt={`${movie.title} backdrop`} 
@@ -82,8 +69,8 @@ const MovieDetails: React.FC<{ movie: Movie, recommendedMovies: Movie[] }> = ({ 
                 src={posterPath} 
                 alt={`${movie.title} poster`} 
                 className="w-full rounded-md shadow-lg"
-                width={1920}
-                height={1080}  
+                width={300}
+                height={450}  
               />
             </div>
             
@@ -91,12 +78,14 @@ const MovieDetails: React.FC<{ movie: Movie, recommendedMovies: Movie[] }> = ({ 
             <div className="flex-grow md:my-auto">
               <h1 className="text-3xl md:text-4xl font-bold mb-1">{movie.title}</h1>
               
+              {tagline && <p className="text-gray-400 italic mb-3">{tagline}</p>}
+              
               <div className="flex items-center gap-5 text-sm text-gray-400 mb-4">
                 <span>{year}</span>
                 <span>{runtime}</span>
                 <div className="flex items-center text-yellow-400">
                   <Star size={16} fill="currentColor" />
-                  <span className="ml-1">{movie?.vote_average?.toFixed(1)}</span>
+                  <span className="ml-1">{movie.vote_average?.toFixed(1)}</span>
                 </div>
               </div>
               
@@ -106,7 +95,7 @@ const MovieDetails: React.FC<{ movie: Movie, recommendedMovies: Movie[] }> = ({ 
                     key={index} 
                     className="px-3 py-1 bg-gray-800 rounded-full text-sm"
                   >
-                    {genre}
+                    {genre.name}
                   </span>
                 ))}
               </div>
@@ -138,13 +127,23 @@ const MovieDetails: React.FC<{ movie: Movie, recommendedMovies: Movie[] }> = ({ 
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4 text-sm text-gray-800 mb-10 dark:text-gray-300">
           <div className="flex">
-            <span className="w-24 text-gray-400">Director</span>
-            <span>{director}</span>
+            <span className="w-24 text-gray-400">Status</span>
+            <span>{movie.status}</span>
           </div>
           
           <div className="flex">
-            <span className="w-24 text-gray-400">Writers</span>
-            <span>{writers.join(', ')}</span>
+            <span className="w-24 text-gray-400">Budget</span>
+            <span>${movie.budget?.toLocaleString()}</span>
+          </div>
+          
+          <div className="flex">
+            <span className="w-24 text-gray-400">Revenue</span>
+            <span>${movie.revenue?.toLocaleString()}</span>
+          </div>
+          
+          <div className="flex">
+            <span className="w-24 text-gray-400">Countries</span>
+            <span>{countries}</span>
           </div>
           
           <div className="flex">
@@ -156,23 +155,28 @@ const MovieDetails: React.FC<{ movie: Movie, recommendedMovies: Movie[] }> = ({ 
             <span className="w-24 text-gray-400">Production</span>
             <span>{production}</span>
           </div>
+          
+          <div className="flex">
+            <span className="w-24 text-gray-400">Languages</span>
+            <span>{movie.spoken_languages?.map(lang => lang.english_name).join(', ')}</span>
+          </div>
         </div>
       </section>
       
-      {/* Cast Section */}
+      {/* Recommended Section */}
       <section className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-6">
-        <h1 className='text-secondary-foreground font-bold text-lg'>You might also like this</h1>
+          <h1 className='text-secondary-foreground font-bold text-lg'>You might also like this</h1>
           <a href="#" className="text-primary text-sm hover:underline">View All</a>
         </div>
         
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-          {
+            {
             recommendedMovies ? 
-            recommendedMovies.map((movie, index) => (
+            recommendedMovies.results.map((movie: Movie, index: number) => (
               <MovieCard key={index} movie={movie} />
-            )) : <p className='text-white'>No recommended movies available</p>
-          }
+            )) : <p className='text-secondary-foreground'>No recommended movies available</p>
+            }
         </div>
       </section>
     </div>
