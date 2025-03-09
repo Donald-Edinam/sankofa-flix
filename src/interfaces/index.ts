@@ -1,4 +1,4 @@
-export interface Movie {
+interface Movie {
   backdrop_path: string;
   id: number;
   title: string;
@@ -14,15 +14,14 @@ export interface Movie {
   video: boolean;
   vote_average: number;
   vote_count: number;
-  runtime?: number; // Optional as it might not be in the API response
-  cast?: {
-    name: string;
-    character: string;
-    image: string;
-  }[];
-  director?: string;
-  writers?: string[];
-  production?: string;
 }
+
+interface MovieResponse {
+  page: number;
+  results: Movie[];
+}
+
+
+export type { Movie, MovieResponse };
 
 export type Genre = "All Genres" | "Drama" | "Action" | "Comedy" | "Documentary";

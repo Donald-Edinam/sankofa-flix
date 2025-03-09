@@ -15,7 +15,7 @@ function MovieShowcase() {
     queryFn: movieApi.fetchTrendingMovies
   });
 
-  const featuredMovies = data?.slice(4, 10) || [];
+  const featuredMovies = data?.results?.slice(4, 10) || [];
 
   if (isLoading) {
     return <Loader />;

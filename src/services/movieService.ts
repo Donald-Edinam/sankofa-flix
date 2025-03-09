@@ -1,5 +1,5 @@
 // services/memoService.ts
-import { Movie, Genre } from '@/interfaces';
+import { Movie, Genre, MovieResponse } from '@/interfaces';
 import api from '@/lib/api';
 
 // Map genre names to their corresponding IDs
@@ -12,29 +12,29 @@ const genreIdMap: Record<Genre, number> = {
 };
 
 export const movieApi = {
-  fetchTrendingMovies: (): Promise<Movie[]> => {
-    return api.get<Movie[]>('/movies/trending');
+  fetchTrendingMovies: (): Promise<MovieResponse> => {
+    return api.get<MovieResponse>('/movies/trending');
   }
 };
 
 export const genreMovies = {
   fetchTrendingMovies: async (): Promise<Movie[]> => {
     // Fetch trending movies from the API
-    const response = await api.get<Movie[]>('/movies/trending');
-    return response; // Return the data property from the response
+    const response = await api.get<MovieResponse>('/movies/trending');
+    return response.results; // Return the results property from the response
   },
   
   fetchMoviesByGenre: async (genre: Genre | 'All Genres'): Promise<Movie[]> => {
     // Fetch all trending movies
-    const response = await api.get<Movie[]>('/movies/trending');
+    const response = await api.get<MovieResponse>('/movies/trending');
     const movies = response; // Access the data property
 
     // Filter movies by genre on the client side
     if (genre === "All Genres") {
-      return movies; // Return all movies if no specific genre is selected
+      return movies.results; // Return all movies if no specific genre is selected
     } else {
       const genreId = genreIdMap[genre]; // Get the genre ID from the map
-      return movies.filter((movie: Movie) => 
+      return movies.results.filter((movie: Movie) => 
         movie?.genre_ids?.includes(genreId) // Filter movies that include the selected genre ID
       );
     }

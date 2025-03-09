@@ -19,10 +19,14 @@ const HeroBanner = () => {
     const { fetchTrendingMovies } = movieApi;
     const router = useRouter();
 
-    const { data: featuredMovies, isLoading, error, isError } = useQuery({
+    const { data, isLoading, error, isError } = useQuery({
         queryKey: ['trending-movies'],
         queryFn: fetchTrendingMovies,
     });
+
+    const featuredMovies = data?.results || []; 
+
+    console.log("Featured Movies", featuredMovies);
 
     if (isLoading) {
         return <h1>Loading...</h1>;
