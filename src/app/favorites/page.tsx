@@ -1,9 +1,9 @@
-import React from 'react'
+"use client"
+import React from 'react';
+import withAuth from '@/hoc/withAuth';
 
 const Favorites = () => {
-  return (
-    <div>Favorites</div>
-  )
-}
+  return <div>Favorites Page - Protected</div>;
+};
 
-export default Favorites
+export default withAuth(Favorites);

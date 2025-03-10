@@ -61,6 +61,16 @@ interface MovieResponse {
   results: Movie[];
 }
 
-export type { Movie, MovieResponse };
+interface User {
+  id: number;
+  username: string;
+  email: string;
+  password?: string;
+  favorite_genres?: Genre[];
+  watchlist?: Movie[];
+  watched?: Movie[];
+}
+
+export type { Movie, MovieResponse, User };
 
 export type Genre = "All Genres" | "Drama" | "Action" | "Comedy" | "Documentary";

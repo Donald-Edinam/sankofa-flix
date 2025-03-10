@@ -1,10 +1,32 @@
 import React from 'react';
+import { Metadata } from 'next';
 import MovieDetails from '@/components/common/MovieDetails';
 import Link from 'next/link';
 import { getMovieDetails, fetchRecommendedMovies } from '@/services/services';
+import { generateMovieMetadata } from '@/lib/seo';
 
+// Generate metadata for the movie page
+export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
+  const movie = await getMovieDetails(params.id);
+  if (!movie) {
+    return {
+      title: 'Movie Not Found',
+      description: 'The requested movie could not be found on SankofaFlix.',
+    };
+  }
+  return generateMovieMetadata(movie);
+}
+
+// For the MoviePage component
 export default async function MoviePage({ params }: { params: { id: string } }) {
-  const movieData = await getMovieDetails(params.id);
+  // Await the params first
+  const { id } = await params;
+  
+  // Now use the id after it's been awaited
+  const [movieData, recommendedMovies] = await Promise.all([
+    getMovieDetails(id),
+    fetchRecommendedMovies({ movieId: id })
+  ]);
   
   if (!movieData) {
     return (
@@ -23,10 +45,9 @@ export default async function MoviePage({ params }: { params: { id: string } }) 
     );
   }
 
-  const recommendedMovies = await fetchRecommendedMovies({ movieId: params.id });
-
   return <MovieDetails
     movie={movieData}
     recommendedMovies={recommendedMovies}
   />;
 }
+
