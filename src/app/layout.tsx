@@ -36,7 +36,7 @@ export const metadata: Metadata = {
   description: "Discover and explore African and diaspora cinema with personalized movie recommendations from SankofaFlix",
   openGraph: {
     type: 'website',
-    url: 'https://sankofaflix.com',
+    url: 'https://sankofa-flix.vercel.app/',
     siteName: 'SankofaFlix',
   },
   icons: {
