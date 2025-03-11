@@ -8,6 +8,7 @@ import Navbar from "@/components/navbar/navbar";
 import { AuthProvider } from "@/context/AuthContext";
 import { Toaster } from 'react-hot-toast'
 import { FavoritesProvider } from "@/context/FavoriteContext";
+import { Analytics } from "@vercel/analytics/react"
 
 // Define the local Poppins font
 const poppins = localFont({
@@ -55,6 +56,7 @@ export default function RootLayout({
           <QueryProvider>
             <AuthProvider>
               <FavoritesProvider>
+                <Analytics />
                 <Navbar />
                 <main>
                   <Toaster />
