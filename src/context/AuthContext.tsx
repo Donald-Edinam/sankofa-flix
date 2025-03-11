@@ -6,6 +6,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { User } from '@/interfaces';
 import { loginUser, registerUser, logoutUser, isAuthenticated, getAccessToken } from '@/services/authService';
 import toast from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
 
 interface AuthContextType {
   user: User | null;
@@ -24,6 +25,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [authenticated, setAuthenticated] = useState<boolean>(false);
+  const router = useRouter();
 
   // Fetch user data using the access token
   const fetchUserData = async () => {

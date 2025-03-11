@@ -1,61 +1,32 @@
-// services/favoritesService.ts
+import axios, { AxiosError } from 'axios';
+import toast from 'react-hot-toast';
+import { FavoriteMovie, UserFavoritesResponse, FavoriteMovieInput } from '@/interfaces';
 
-import { Movie } from '@/interfaces';
-import { getAccessToken, refreshToken } from './authService';
+// Create an Axios instance with a base URL and auth headers
+const getFavoritesClient = () => {
+  const token = localStorage.getItem('access_token');
 
-/**
- * Interface for favorites response from API
- */
-interface FavoritesResponse {
-  id: number;
-  user: number;
-  movie: Movie;
-  created_at: string;
-}
+  console.log("Debugging console", token)
 
-/**
- * Helper function to add authorization headers to requests
- */
-async function authorizedFetch(url: string, options: RequestInit = {}): Promise<Response> {
-  let token = getAccessToken();
-  
-  // Set up headers with authorization
-  const headers = {
-    ...options.headers,
-    'Authorization': `Bearer ${token}`,
-    'Content-Type': 'application/json',
-  };
-  
-  // Make the request
-  let response = await fetch(url, { ...options, headers });
-  
-  // If unauthorized, try refreshing token once
-  if (response.status === 401) {
-    const newToken = await refreshToken();
-    if (newToken) {
-      headers['Authorization'] = `Bearer ${newToken}`;
-      response = await fetch(url, { ...options, headers });
-    }
-  }
-  
-  return response;
-}
+  return axios.create({
+    baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': token ? `Bearer ${token}` : '',
+    },
+  });
+};
 
 /**
- * Get user's favorite movies
+ * Get all favorites for the current user
  */
-export async function getFavorites(): Promise<Movie[]> {
+export async function getFavorites(): Promise<FavoriteMovie[]> {
   try {
-    const response = await authorizedFetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/favorites/`);
-    
-    if (!response.ok) {
-      throw new Error('Failed to fetch favorites');
-    }
-    
-    const data: FavoritesResponse[] = await response.json();
-    return data.map(item => item.movie);
+    const client = getFavoritesClient();
+    const response = await client.get<UserFavoritesResponse>('/auth/favorites/');
+    return response.data.favorite_movies;
   } catch (error) {
-    console.error('Error fetching favorites:', error);
+    handleApiError(error as AxiosError);
     return [];
   }
 }
@@ -63,54 +34,75 @@ export async function getFavorites(): Promise<Movie[]> {
 /**
  * Add a movie to favorites
  */
-export async function addToFavorites(movieId: number | string): Promise<boolean> {
+export async function addToFavorites(movieId: number): Promise<FavoriteMovie | null> {
   try {
-    const response = await authorizedFetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/favorites/`, {
-      method: 'POST',
-      body: JSON.stringify({ movie_id: movieId }),
-    });
-    
-    return response.ok;
+    const client = getFavoritesClient();
+    const response = await client.post<{ favorite_movie: FavoriteMovie }>(
+      '/auth/favorites/',
+      { movie_id: movieId }
+    );
+
+    // Return the newly added favorite movie
+    return response.data.favorite_movie;
   } catch (error) {
-    console.error('Error adding to favorites:', error);
-    return false;
+    handleApiError(error as AxiosError);
+    return null;
   }
 }
 
 /**
  * Remove a movie from favorites
  */
-export async function removeFromFavorites(favoriteId: number | string): Promise<boolean> {
+export async function removeFromFavorites(movieId: number): Promise<boolean> {
   try {
-    const response = await authorizedFetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/favorites/${favoriteId}/`, {
-      method: 'DELETE',
-    });
-    
-    return response.ok;
+    const client = getFavoritesClient();
+    await client.delete(`/auth/favorites/${movieId}/`);
+    return true;
   } catch (error) {
-    console.error('Error removing from favorites:', error);
+    handleApiError(error as AxiosError);
     return false;
   }
 }
 
 /**
  * Check if a movie is in favorites
- * Returns the favorite ID if found, null otherwise
  */
-export async function checkFavoriteStatus(movieId: number | string): Promise<number | null> {
+export async function checkIsFavorite(movieId: number): Promise<boolean> {
   try {
     const favorites = await getFavorites();
-    const favorite = favorites.find(movie => movie.id === Number(movieId));
-    
-    if (favorite) {
-      // If we need to return the favorite ID, we might need to modify the API response
-      // to include this information. For now, we'll return a placeholder
-      return Number(movieId); // This should be the favorite ID, not the movie ID in a real implementation
-    }
-    
-    return null;
+    return favorites.some(fav => fav.movie_id === movieId);
   } catch (error) {
-    console.error('Error checking favorite status:', error);
-    return null;
+    return false;
+  }
+}
+
+/**
+ * Handle API errors
+ */
+function handleApiError(error: AxiosError): void {
+  if (error.response) {
+    const { status, data } = error.response;
+
+    if (typeof data === 'object' && data !== null) {
+      // Loop through all possible error fields dynamically
+      Object.entries(data).forEach(([key, messages]) => {
+        if (Array.isArray(messages)) {
+          messages.forEach((msg) => toast.error(`${key}: ${msg}`));
+        } else if (typeof messages === 'string') {
+          toast.error(`${key}: ${messages}`);
+        } else {
+          toast.error(`Error: ${JSON.stringify(messages)}`);
+        }
+      });
+    } else {
+      toast.error(`Error ${status}: ${typeof data === 'string' ? data : 'An unexpected error occurred.'}`);
+    }
+    console.error('API Error:', error.response);
+  } else if (error.request) {
+    toast.error('Network Error: Please check your internet connection.');
+    console.error('Network Error:', error.request);
+  } else {
+    toast.error(`Error: ${error.message}`);
+    console.error('Request Error:', error.message);
   }
 }

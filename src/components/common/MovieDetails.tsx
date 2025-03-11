@@ -1,8 +1,12 @@
+"use client";
+
 import React from 'react';
-import { Star, Play, Plus, Share } from 'lucide-react';
+import { Star, Plus, Share } from 'lucide-react';
 import Image from 'next/image';
 import { Movie, MovieResponse } from '@/interfaces';
 import dynamic from 'next/dynamic';
+import { useFavorites } from '@/context/FavoriteContext'; // Import the useFavorites hook
+import toast from 'react-hot-toast';
 
 // Dynamically import MovieCard with loading state
 const MovieCard = dynamic(() => import('./MovieCard'), {
@@ -15,49 +19,87 @@ const ImagePlaceholder = () => (
 );
 
 // Extract MovieInfo to a separate component to reduce re-renders
-const MovieInfo = ({ movie, year, runtime, genres }: { movie: Movie, year: string, runtime: string, genres: { name: string }[] }) => (
-  <div className="flex-grow md:my-auto">
-    <h1 className="text-3xl md:text-4xl font-bold mb-1">{movie.title}</h1>
-    
-    {movie.tagline && <p className="text-gray-400 italic mb-3">{movie.tagline}</p>}
-    
-    <div className="flex items-center gap-5 text-sm text-gray-400 mb-4">
-      <span>{year}</span>
-      <span>{runtime}</span>
-      <div className="flex items-center text-yellow-400">
-        <Star size={16} fill="currentColor" />
-        <span className="ml-1">{movie.vote_average?.toFixed(1)}</span>
+const MovieInfo = ({ movie, year, runtime, genres }: { movie: Movie, year: string, runtime: string, genres: { name: string }[] }) => {
+  const { addFavorite, isFavorite } = useFavorites(); // Use the useFavorites hook
+  const [isProcessing, setIsProcessing] = React.useState(false); // Loading state
+
+  const handleAddToFavorites = async () => {
+    if (isProcessing) return; // Prevent multiple clicks
+    setIsProcessing(true);
+
+    try {
+      const success = await addFavorite(movie.id); // Add the movie to favorites
+      if (success) {
+        toast.success(`${movie.title} added to favorites!`);
+      } else {
+        toast.error('Failed to add to favorites. Please try again.');
+      }
+    } catch (error) {
+      toast.error('An error occurred. Please try again.');
+      console.error('Error adding to favorites:', error);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  return (
+    <div className="flex-grow md:my-auto">
+      <h1 className="text-3xl md:text-4xl font-bold mb-1">{movie.title}</h1>
+      
+      {movie.tagline && <p className="text-gray-400 italic mb-3">{movie.tagline}</p>}
+      
+      <div className="flex items-center gap-5 text-sm text-gray-400 mb-4">
+        <span>{year}</span>
+        <span>{runtime}</span>
+        <div className="flex items-center text-yellow-400">
+          <Star size={16} fill="currentColor" />
+          <span className="ml-1">{movie.vote_average?.toFixed(1)}</span>
+        </div>
+      </div>
+      
+      <div className="flex flex-wrap gap-2 mb-6">
+        {genres.map((genre, index) => (
+          <span 
+            key={index} 
+            className="px-3 py-1 bg-gray-800 rounded-full text-sm"
+          >
+            {genre.name}
+          </span>
+        ))}
+      </div>
+      
+      <div className="flex flex-wrap gap-3 mb-8">
+        {/* <button className="flex items-center gap-2 bg-red-600 hover:bg-red-700 px-4 py-2 rounded-md transition">
+          <Play size={16} fill="currentColor" />
+          <span>Watch Trailer</span>
+        </button> */}
+        
+        <button
+          onClick={handleAddToFavorites}
+          disabled={isProcessing || isFavorite(movie.id)} // Disable if already in favorites or processing
+          className={`flex items-center gap-2 ${
+            isFavorite(movie.id)
+              ? 'bg-green-800 cursor-not-allowed' // Already in favorites
+              : 'bg-green-700 hover:bg-green-800' // Not in favorites
+          } px-4 py-2 rounded-md transition`}
+        >
+          <Plus size={16} />
+          <span>
+            {isProcessing
+              ? 'Adding...'
+              : isFavorite(movie.id)
+              ? 'In Favorites'
+              : 'Add to Favorites'}
+          </span>
+        </button>
+        
+        <button className="w-10 h-10 flex items-center justify-center bg-gray-800 hover:bg-gray-700 rounded-md transition">
+          <Share size={16} />
+        </button>
       </div>
     </div>
-    
-    <div className="flex flex-wrap gap-2 mb-6">
-      {genres.map((genre, index) => (
-        <span 
-          key={index} 
-          className="px-3 py-1 bg-gray-800 rounded-full text-sm"
-        >
-          {genre.name}
-        </span>
-      ))}
-    </div>
-    
-    <div className="flex flex-wrap gap-3 mb-8">
-      {/* <button className="flex items-center gap-2 bg-red-600 hover:bg-red-700 px-4 py-2 rounded-md transition">
-        <Play size={16} fill="currentColor" />
-        <span>Watch Trailer</span>
-      </button>
-       */}
-      <button className="flex items-center gap-2 bg-green-700 hover:bg-green-800 px-4 py-2 rounded-md transition">
-        <Plus size={16} />
-        <span>Add to Watchlist</span>
-      </button>
-      
-      <button className="w-10 h-10 flex items-center justify-center bg-gray-800 hover:bg-gray-700 rounded-md transition">
-        <Share size={16} />
-      </button>
-    </div>
-  </div>
-);
+  );
+};
 
 const MovieDetails = React.memo(({ movie, recommendedMovies }: { movie: Movie, recommendedMovies: MovieResponse }) => {
   // Format release year

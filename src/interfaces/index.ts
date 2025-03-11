@@ -71,6 +71,40 @@ interface User {
   watched?: Movie[];
 }
 
-export type { Movie, MovieResponse, User };
+
+interface FavoriteMovie {
+  movie_id: number;
+  created_at: string;
+  title: string;
+  overview: string;
+  release_date: string;
+  poster_path: string;
+  vote_average?: number;
+}
+interface FavoriteMovieInput {
+  movie_id: number;
+}
+
+interface FavoritesContextType {
+  favorites: FavoriteMovie[];
+  loading: boolean;
+  error: string | null;
+  isFavorite: (movieId: number) => boolean;
+  getFavoriteId: (movieId: number) => number | null;
+  addFavorite: (movieId: number) => Promise<boolean>;
+  removeFavorite: (id: number) => Promise<boolean>;
+  refreshFavorites: () => Promise<void>;
+}
+
+interface UserFavoritesResponse {
+  user: {
+    id: number;
+    username: string;
+    email: string;
+  };
+  favorite_movies: FavoriteMovie[];
+}
+
+export type { Movie, MovieResponse, User, FavoriteMovie, FavoriteMovieInput, FavoritesContextType, UserFavoritesResponse };
 
 export type Genre = "All Genres" | "Drama" | "Action" | "Comedy" | "Documentary";

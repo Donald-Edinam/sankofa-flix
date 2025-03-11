@@ -7,6 +7,7 @@ import Footer from "@/components/footer/footer";
 import Navbar from "@/components/navbar/navbar";
 import { AuthProvider } from "@/context/AuthContext";
 import { Toaster } from 'react-hot-toast'
+import { FavoritesProvider } from "@/context/FavoriteContext";
 
 // Define the local Poppins font
 const poppins = localFont({
@@ -53,12 +54,14 @@ export default function RootLayout({
         <ThemeProvider>
           <QueryProvider>
             <AuthProvider>
-              <Navbar />
-              <main>
-                <Toaster />
-                {children}
-              </main>
-              <Footer />
+              <FavoritesProvider>
+                <Navbar />
+                <main>
+                  <Toaster />
+                  {children}
+                </main>
+                <Footer />
+              </FavoritesProvider>
             </AuthProvider>
           </QueryProvider>
         </ThemeProvider>
