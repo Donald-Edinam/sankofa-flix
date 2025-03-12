@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import toast from 'react-hot-toast';
+import { Eye, EyeOff } from 'lucide-react';
 
 const SignupForm = () => {
   const [name, setName] = useState('');
@@ -12,6 +13,8 @@ const SignupForm = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const { register } = useAuth();
   const router = useRouter();
@@ -19,32 +22,32 @@ const SignupForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-  
+
     // Client-side validation
     if (!name || !email || !password || !confirmPassword) {
       toast.error('Please fill in all fields');
       setLoading(false);
       return;
     }
-  
+
     if (password !== confirmPassword) {
       toast.error('Passwords do not match');
       setLoading(false);
       return;
     }
-  
+
     if (password.length < 8) {
       toast.error('Password must be at least 8 characters long');
       setLoading(false);
       return;
     }
-  
+
     // Ensure the username follows API requirements
     const validUsername = name.replace(/\s+/g, '_'); // Replace spaces with underscores
-  
+
     try {
       const success = await register(validUsername, email, password, confirmPassword);
-  
+
       if (success) {
         toast.success('Account created successfully!');
         router.push('/');
@@ -52,7 +55,7 @@ const SignupForm = () => {
     } catch (err: any) {
       if (err.response && err.response.data) {
         const errorData = err.response.data;
-  
+
         if (errorData.username) {
           toast.error(errorData.username[0]);
         } else if (errorData.password2) {
@@ -67,7 +70,14 @@ const SignupForm = () => {
       setLoading(false);
     }
   };
-  
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showConfirmPassword);
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center mt-5 bg-gray-900">
@@ -112,14 +122,14 @@ const SignupForm = () => {
             />
           </div>
 
-          <div>
+          <div className="relative">
             <label htmlFor="password" className="block text-sm font-medium text-gray-400">
               Password
             </label>
             <input
               id="password"
               name="password"
-              type="password"
+              type={showPassword ? 'text' : 'password'}
               autoComplete="new-password"
               required
               value={password}
@@ -127,16 +137,27 @@ const SignupForm = () => {
               className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-red-500 focus:border-red-500"
               placeholder="********"
             />
+            <button
+              type="button"
+              onClick={togglePasswordVisibility}
+              className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5 mt-7"
+            >
+              {showPassword ? (
+                <EyeOff className="h-5 w-5 text-gray-400" />
+              ) : (
+                <Eye className="h-5 w-5 text-gray-400" />
+              )}
+            </button>
           </div>
 
-          <div>
+          <div className="relative">
             <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-400">
               Confirm Password
             </label>
             <input
               id="confirmPassword"
               name="confirmPassword"
-              type="password"
+              type={showConfirmPassword ? 'text' : 'password'}
               autoComplete="new-password"
               required
               value={confirmPassword}
@@ -144,6 +165,17 @@ const SignupForm = () => {
               className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-red-500 focus:border-red-500"
               placeholder="********"
             />
+            <button
+              type="button"
+              onClick={toggleConfirmPasswordVisibility}
+              className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5 mt-7"
+            >
+              {showConfirmPassword ? (
+                <EyeOff className="h-5 w-5 text-gray-400" />
+              ) : (
+                <Eye className="h-5 w-5 text-gray-400" />
+              )}
+            </button>
           </div>
 
           <div className="flex items-center">
