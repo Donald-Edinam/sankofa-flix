@@ -105,6 +105,15 @@ interface UserFavoritesResponse {
   favorite_movies: FavoriteMovie[];
 }
 
-export type { Movie, MovieResponse, User, FavoriteMovie, FavoriteMovieInput, FavoritesContextType, UserFavoritesResponse };
+interface RegisterAuthResponse {
+  message: string;
+  user: {
+    id: number;
+    username: string;
+    email: string;
+  };
+}
+
+export type { Movie, MovieResponse, User, FavoriteMovie, FavoriteMovieInput, FavoritesContextType, UserFavoritesResponse, RegisterAuthResponse };
 
 export type Genre = "All Genres" | "Drama" | "Action" | "Comedy" | "Documentary";

@@ -1,5 +1,3 @@
-// contexts/AuthContext.tsx
-
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
@@ -100,18 +98,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Register function
   const register = async (username: string, email: string, password: string, password2: string) => {
     setLoading(true);
-
+  
     const response = await registerUser({ username, email, password, password2 });
-
+  
     if (response) {
-      setUser(response.user);
-      setAuthenticated(true);
+      toast.success(response.message, {duration: 3400}); // Display the success message from the API
+      setUser(response.user); // Update the user state with the registered user data
       setLoading(false);
-      return true;
+      return true; // Indicate success
     }
-
+  
     setLoading(false);
-    return false;
+    return false; // Indicate failure
   };
 
   // Logout function

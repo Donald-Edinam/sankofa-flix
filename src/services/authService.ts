@@ -2,6 +2,7 @@ import axios, { AxiosError } from 'axios';
 import { User } from '@/interfaces';
 import toast from 'react-hot-toast';
 import { setTimeout } from 'timers';
+import { RegisterAuthResponse } from '@/interfaces';
 
 // Define interfaces for authentication
 interface LoginCredentials {
@@ -60,23 +61,18 @@ export async function loginUser(credentials: LoginCredentials): Promise<AuthResp
 /**
  * Register new user
  */
-export async function registerUser(credentials: RegisterCredentials): Promise<AuthResponse | null> {
+export async function registerUser(credentials: RegisterCredentials): Promise<RegisterAuthResponse | null> {
   try {
-    const response = await apiClient.post<AuthResponse>('/auth/register/', credentials);
+    const response = await apiClient.post<RegisterAuthResponse>('/auth/register/', credentials);
 
-    // Store tokens in localStorage (client-side only)
-    if (typeof window !== 'undefined') {
-      // toast.success("Account created successfully! Please login to continue", { duration: 3500 });
-      setTimeout(
-        window.location.href = "/login", 3000
-      )
+    if (response.data) {
+      toast.success(response.data.message); // Display the success message from the API
+      return response.data;
     }
-
-    return response.data;
   } catch (error) {
     handleApiError(error as AxiosError<ApiError>);
-    return null;
   }
+  return null;
 }
 
 /**

@@ -42,15 +42,17 @@ const SignupForm = () => {
       return;
     }
 
-    // Ensure the username follows API requirements
-    const validUsername = name.replace(/\s+/g, '_'); // Replace spaces with underscores
+    // Format the username to remove spaces
+    const formattedUsername = name.replace(/\s+/g, ''); // Remove all spaces
 
     try {
-      const success = await register(validUsername, email, password, confirmPassword);
+      const success = await register(formattedUsername, email, password, confirmPassword);
 
       if (success) {
-        toast.success('Account created successfully!');
-        router.push('/');
+        // toast.success('Account created successfully! Redirecting to login...');
+        setTimeout(() => {
+          router.push('/login'); // Redirect to login page after successful registration
+        }, 2000);
       }
     } catch (err: any) {
       if (err.response && err.response.data) {
@@ -70,6 +72,7 @@ const SignupForm = () => {
       setLoading(false);
     }
   };
+
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -101,8 +104,13 @@ const SignupForm = () => {
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-red-500 focus:border-red-500"
-              placeholder="John Doe"
+              placeholder="JohnDoe"
             />
+            {name.includes(' ') && (
+              <p className="text-sm text-red-500 mt-1">
+                Username cannot contain spaces. Spaces will be removed automatically.
+              </p>
+            )}
           </div>
 
           <div>
@@ -202,9 +210,8 @@ const SignupForm = () => {
             <button
               type="submit"
               disabled={loading}
-              className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white transition-all bg-primary hover:bg-primary/10 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 ${
-                loading ? 'opacity-75 cursor-not-allowed' : ''
-              }`}
+              className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white transition-all bg-primary hover:bg-primary/10 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 ${loading ? 'opacity-75 cursor-not-allowed' : ''
+                }`}
             >
               {loading ? 'Creating account...' : 'Create account'}
             </button>
