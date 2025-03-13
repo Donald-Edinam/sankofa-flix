@@ -20,15 +20,15 @@ const ImagePlaceholder = () => (
 
 // Extract MovieInfo to a separate component to reduce re-renders
 const MovieInfo = ({ movie, year, runtime, genres }: { movie: Movie, year: string, runtime: string, genres: { name: string }[] }) => {
-  const { addFavorite, isFavorite } = useFavorites(); // Use the useFavorites hook
-  const [isProcessing, setIsProcessing] = React.useState(false); // Loading state
+  const { addFavorite, isFavorite } = useFavorites();
+  const [isProcessing, setIsProcessing] = React.useState(false);
 
   const handleAddToFavorites = async () => {
-    if (isProcessing) return; // Prevent multiple clicks
+    if (isProcessing) return;
     setIsProcessing(true);
 
     try {
-      const success = await addFavorite(movie.id); // Add the movie to favorites
+      const success = await addFavorite(movie.id);
       if (success) {
         toast.success(`${movie.title} added to favorites!`);
       } else {
@@ -39,6 +39,31 @@ const MovieInfo = ({ movie, year, runtime, genres }: { movie: Movie, year: strin
       console.error('Error adding to favorites:', error);
     } finally {
       setIsProcessing(false);
+    }
+  };
+
+  const handleShare = async () => {
+    const shareData = {
+      title: movie.title,
+      text: `Check out this movie: ${movie.title}. ${movie.overview}`,
+      url: window.location.href,
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+        toast.success('Shared successfully!');
+      } catch (error) {
+        toast.error('Sharing failed. Please try again.');
+        console.error('Error sharing:', error);
+      }
+    } else {
+      // Fallback for browsers that do not support the Web Share API
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        toast.success('Link copied to clipboard!');
+      }).catch(() => {
+        toast.error('Failed to copy link to clipboard.');
+      });
     }
   };
 
@@ -69,18 +94,13 @@ const MovieInfo = ({ movie, year, runtime, genres }: { movie: Movie, year: strin
       </div>
       
       <div className="flex flex-wrap gap-3 mb-8">
-        {/* <button className="flex items-center gap-2 bg-red-600 hover:bg-red-700 px-4 py-2 rounded-md transition">
-          <Play size={16} fill="currentColor" />
-          <span>Watch Trailer</span>
-        </button> */}
-        
         <button
           onClick={handleAddToFavorites}
-          disabled={isProcessing || isFavorite(movie.id)} // Disable if already in favorites or processing
+          disabled={isProcessing || isFavorite(movie.id)}
           className={`flex items-center gap-2 ${
             isFavorite(movie.id)
-              ? 'bg-green-800 cursor-not-allowed' // Already in favorites
-              : 'bg-green-700 hover:bg-green-800' // Not in favorites
+              ? 'bg-green-800 cursor-not-allowed'
+              : 'bg-green-700 hover:bg-green-800'
           } px-4 py-2 rounded-md transition`}
         >
           <Plus size={16} />
@@ -93,7 +113,10 @@ const MovieInfo = ({ movie, year, runtime, genres }: { movie: Movie, year: strin
           </span>
         </button>
         
-        <button className="w-10 h-10 flex items-center justify-center bg-gray-800 hover:bg-gray-700 rounded-md transition">
+        <button 
+          onClick={handleShare}
+          className="w-10 h-10 flex items-center justify-center bg-gray-800 hover:bg-gray-700 rounded-md transition"
+        >
           <Share size={16} />
         </button>
       </div>
