@@ -9,6 +9,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import { Toaster } from 'react-hot-toast'
 import { FavoritesProvider } from "@/context/FavoriteContext";
 import { Analytics } from "@vercel/analytics/react"
+import { TransitionProvider } from "@/context/TransitionContext";
 
 // Define the local Poppins font
 const poppins = localFont({
@@ -56,13 +57,15 @@ export default function RootLayout({
           <QueryProvider>
             <AuthProvider>
               <FavoritesProvider>
-                <Analytics />
-                <Navbar />
-                <main>
-                  <Toaster />
-                  {children}
-                </main>
-                <Footer />
+                <TransitionProvider>
+                  <Analytics />
+                  <Navbar />
+                  <main>
+                    <Toaster />
+                    {children}
+                  </main>
+                  <Footer />
+                </TransitionProvider>
               </FavoritesProvider>
             </AuthProvider>
           </QueryProvider>
